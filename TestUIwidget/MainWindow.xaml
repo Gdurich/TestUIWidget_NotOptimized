@@ -1,0 +1,324 @@
+﻿<Window x:Class="TestUIwidget.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:helpers="clr-namespace:TestUIwidget.Helpers"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        Height="450"
+        Width="800"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="#474747"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False">
+    <Window.Resources>
+        <helpers:LeftMarginConverter x:Key="leftMarginConverter"/>
+        <DataTemplate x:Key="firstDataTemplate">
+            <Border Background="{Binding Backgd}"
+                    Margin="{Binding StartTime, Converter={StaticResource leftMarginConverter}}"
+                    BorderBrush="Black"
+                    HorizontalAlignment="Left"
+                    BorderThickness="1"
+                    Height="25"
+                    Padding="0"
+                    Style="{DynamicResource ItemBorderStyle}">
+                <Grid Margin="0">
+                    <Label Content="{Binding Number}"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           Foreground="White"
+                           FontWeight="Bold"
+                           Margin="10,0,0,0"/>
+                    <Polygon Stroke="Black" 
+                             StrokeThickness="1"
+                             Fill="#ff9159"
+                             Points="0,0 10,0 0,10"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="secondDataTemplate">
+            <Border Margin="{Binding StartTime, Converter={StaticResource leftMarginConverter}}"
+                        BorderBrush="Black"
+                        HorizontalAlignment="Left"
+                        BorderThickness="1"
+                        Height="25"
+                        Padding="0"
+                        Style="{DynamicResource ItemBorderStyle}">
+                <Grid>
+                    <Image Source="Images\ShadedSurface.png"
+                               Stretch="UniformToFill"/>
+                    <Label Content="{Binding Time}"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <helpers:GridTemplateSelector x:Key="GridTemplateSelector"
+                                      FirstTemplate="{StaticResource firstDataTemplate}"
+                                      SecondTemplate="{StaticResource secondDataTemplate}"/>
+        <Style TargetType="Border" x:Key="ItemBorderStyle">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsTransparent}" Value="True">
+                    <Setter Property="Opacity" Value="0.5"/>
+                </DataTrigger>
+            </Style.Triggers>
+            <Setter Property="Width" Value="{Binding EndTime}"/>
+        </Style>
+        <Style TargetType="ItemsControl" x:Key="RowStyle">
+            <Setter Property="Background" Value="#9ca3ad"/>
+            <Setter Property="Margin" Value="-2,0,0,0"/>
+            <Setter Property="Width" Value="{Binding TableWidth}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsEven}" Value="True">
+                    <Setter Property="Background" Value="#a8b2bf"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="RoundCorner">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5,1,5,1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border"
+                                    CornerRadius="4" 
+                                    BorderBrush="Black" 
+                                    BorderThickness="1"
+                                    Background="#848b99">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  TextElement.FontWeight="Bold"
+                                                  Margin="5,0,5,0">
+                                </ContentPresenter>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="border" Value="#9199a8"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Border CornerRadius="10"
+                Margin="7,9,0,9"
+                Background="#636f7d"
+                BorderThickness="2"
+                BorderBrush="Black"
+                Padding="0">
+            <Border Margin="0,5,0,0"
+                    Background="#adafb3"
+                    BorderThickness="0,2,0,0"
+                    BorderBrush="Black"
+                    CornerRadius="0,0,10,10"
+                    Padding="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Background="#adafb3"
+                          Grid.Row="0"
+                          Height="30"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" 
+                                   Width="1"
+                                   Fill="#606163"
+                                   VerticalAlignment="Stretch"
+                                   Margin="10,0,0,0"/>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Label Content="Jun 8 h. Fri"
+                                   Foreground="#151516"
+                                   Grid.Row="0"
+                                   Padding="0"/>
+                            <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden"                                        
+                                          Grid.Row="1"
+                                          x:Name="Ruler">
+                                <ItemsControl ItemsSource="{Binding RulerItems}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <StackPanel Orientation="Vertical"
+                                                        Height="15"
+                                                        Width="50"
+                                                        Background="#adafb3">
+                                                    <Label Content="{Binding Number}"
+                                                       FontSize="10"
+                                                       Padding="0"
+                                                       Margin="3,0,0,0"/>
+                                                    <StackPanel Orientation="Horizontal"
+                                                            VerticalAlignment="Bottom">
+                                                        <Rectangle Width="1"
+                                                               Fill="#606163"
+                                                               Height="3"
+                                                               VerticalAlignment="Bottom"
+                                                               Margin="9,0,0,0"/>
+                                                        <Rectangle Width="1"
+                                                               Fill="#606163"
+                                                               Height="3"
+                                                               VerticalAlignment="Bottom"
+                                                               Margin="9,0,0,0"/>
+                                                        <Rectangle Width="1"
+                                                               Fill="#606163"
+                                                               Height="3"
+                                                               VerticalAlignment="Bottom"
+                                                               Margin="9,0,0,0"/>
+                                                        <Rectangle Width="1"
+                                                               Fill="#606163"
+                                                               Height="3"
+                                                               VerticalAlignment="Bottom"
+                                                               Margin="9,0,0,0"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                <Rectangle  Width="1"
+                                                        Fill="#606163"
+                                                        Height="15"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                        <Rectangle Grid.Column="2" 
+                                   Width="1"
+                                   Fill="#606163"
+                                   VerticalAlignment="Stretch"
+                                   Margin="0,0,10,0"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                    <Border BorderThickness="0,1,0,1"
+                            Grid.Row="1"
+                            BorderBrush="#606163"
+                            Background="#bdc1c7"
+                            HorizontalAlignment="Stretch"
+                            Height="35">
+                        <DockPanel HorizontalAlignment="Stretch">
+                            <Rectangle  Width="1"
+                                        Fill="#999dab"
+                                        VerticalAlignment="Stretch"
+                                        Margin="10,0,0,0"/>
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="5,0">
+                                <Image Source="Images\iconsWY.png"
+                                       Margin="4"/>
+                                <Label Content="16 Pending"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="5,0">
+                                <Image Source="Images\iconsWR.png"
+                                       Margin="4"/>
+                                <Label Content="17 Jeopardy"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="5,0">
+                                <Image Source="Images\iconsCG.png"
+                                       Margin="4"/>
+                                <Label Content="19 Complited"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+                                <Button Content="Generate Schedule"
+                                        Style="{DynamicResource RoundCorner}"
+                                        Foreground="White"
+                                        FontWeight="Bold"
+                                        Background="#848b99"                                  
+                                        Margin="0,4,10,4"
+                                        Command="{Binding GenerateScheduleCommand}">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="10"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <Rectangle  Width="1"
+                                        Fill="#999dab"
+                                        VerticalAlignment="Stretch"
+                                        Margin="0,0,10,0"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                    <ListBox ItemsSource="{Binding GridRows}"
+                             Grid.Row="2"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                             ScrollViewer.ScrollChanged="ListBox_ScrollChanged"
+                             Background="#9ca3ad"
+                             HorizontalAlignment="Stretch"
+                             HorizontalContentAlignment="Left"
+                             Margin="0">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Focusable" Value="False"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <ItemsControl ItemsSource="{Binding Risks}"                                                 
+                                              Style="{StaticResource RowStyle}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal"
+                                                            Margin="0"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Rectangle  Width="1"
+                                                            IsEnabled="{Binding}"
+                                                            Fill="#999dab"
+                                                            VerticalAlignment="Stretch"
+                                                            Margin="9,0,41,0"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <ItemsControl ItemsSource="{Binding RowItems}"
+                                              ItemTemplateSelector="{StaticResource GridTemplateSelector}"
+                                                  VirtualizingPanel.IsVirtualizing="True">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <Grid/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+        </Border>
+    </Grid>
+</Window>
